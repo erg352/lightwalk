@@ -4,7 +4,7 @@ use num::Float;
 pub struct Sphere;
 
 impl<Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for Sphere {
-    #[inline(never)]
+    #[inline]
     fn distance(&self, point: &[Scalar; DIM]) -> Scalar {
         let value: Scalar = if DIM == 1 {
             // The squaring of the scalar followed by the square root may not get optimized out

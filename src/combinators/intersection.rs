@@ -23,3 +23,18 @@ where
         self.lhs.distance(point).max(self.rhs.distance(point))
     }
 }
+
+impl<Scalar: Float, Lhs, Rhs, const DIM: usize> Intersection<Scalar, Lhs, Rhs, DIM>
+where
+    Lhs: Sdf<Scalar, DIM>,
+    Rhs: Sdf<Scalar, DIM>,
+{
+    #[inline]
+    pub fn new(lhs: Lhs, rhs: Rhs) -> Self {
+        Self {
+            lhs,
+            rhs,
+            phantom: PhantomData,
+        }
+    }
+}

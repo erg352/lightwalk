@@ -1,7 +1,7 @@
 use crate::Sdf;
 use num::Float;
 
-use super::Union;
+use super::{Intersection, Union};
 
 pub trait SdfCombinationOperations<Scalar: Float, Rhs, const DIM: usize>:
     Sdf<Scalar, DIM> + Sized
@@ -11,6 +11,11 @@ where
     #[inline]
     fn add(self, rhs: Rhs) -> Union<Scalar, Self, Rhs, DIM> {
         Union::new(self, rhs)
+    }
+
+    #[inline]
+    fn mul(self, rhs: Rhs) -> Intersection<Scalar, Self, Rhs, DIM> {
+        Intersection::new(self, rhs)
     }
 }
 

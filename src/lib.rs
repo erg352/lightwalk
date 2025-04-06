@@ -1,3 +1,5 @@
+#![doc = include_str!("../docs/lib.rs.md")]
+
 pub mod combinators;
 pub mod prelude;
 pub mod primitives;
