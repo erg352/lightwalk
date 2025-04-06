@@ -3,6 +3,7 @@
 pub mod combinators;
 pub mod prelude;
 pub mod primitives;
+pub mod transformers;
 
 use num::Float;
 
