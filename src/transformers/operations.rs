@@ -15,10 +15,21 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-mod operations;
-mod rounding;
-mod translation;
+use crate::Sdf;
+use num::Float;
 
-pub use operations::SdfTransformOperations;
-pub use rounding::Rounded;
-pub use translation::Translated;
+use super::{Rounded, Translated};
+
+pub trait SdfTransformOperations<Scalar: Float, const DIM: usize>:
+    Sdf<Scalar, DIM> + Sized
+{
+    #[inline]
+    fn translate(self, translation: &[Scalar; DIM]) -> Translated<Scalar, Self, DIM> {
+        Translated::new(self, translation)
+    }
+
+    #[inline]
+    fn round(self, factor: Scalar) -> Rounded<Scalar, Self, DIM> {
+        Rounded::new(self, factor)
+    }
+}

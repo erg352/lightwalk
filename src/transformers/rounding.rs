@@ -15,10 +15,33 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-mod operations;
-mod rounding;
-mod translation;
+use crate::Sdf;
+use num::Float;
 
-pub use operations::SdfTransformOperations;
-pub use rounding::Rounded;
-pub use translation::Translated;
+pub struct Rounded<Scalar: Float, T, const DIM: usize>
+where
+    T: Sdf<Scalar, DIM>,
+{
+    inner: T,
+    factor: Scalar,
+}
+
+impl<Scalar: Float, T, const DIM: usize> Sdf<Scalar, DIM> for Rounded<Scalar, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
+{
+    #[inline]
+    fn distance(&self, point: &[Scalar; DIM]) -> Scalar {
+        self.inner.distance(point) - self.factor
+    }
+}
+
+impl<Scalar: Float, T, const DIM: usize> Rounded<Scalar, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
+{
+    #[inline]
+    pub fn new(inner: T, factor: Scalar) -> Self {
+        Self { inner, factor }
+    }
+}
