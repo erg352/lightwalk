@@ -15,6 +15,8 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+use std::{fs::File, io::Write, ops::Range};
+
 use crate::Sdf;
 use num::Float;
 
@@ -68,4 +70,35 @@ where
 
         None
     }
+
+    pub fn trace_to_ppm(&self, mut file: File, res: usize) -> std::io::Result<()> {
+        file.set_len(0)?;
+        {
+            let header = format!("P6\n{0}{0}\n255\n", res);
+            file.write_all(header.as_bytes())?;
+        }
+
+        for [_x, _y] in iter_pairs(&[0..res, 0..res]) {
+            let ray = Ray {
+                origin: todo!(),
+                direction: todo!(),
+            };
+
+            let color = match self.march(&ray) {
+                Some(_collision) => [255; 3],
+                None => [0; 3],
+            };
+
+            file.write_all(&color)?;
+        }
+
+        Ok(())
+    }
+}
+
+fn iter_pairs(range: &[Range<usize>; 2]) -> impl Iterator<Item = [usize; 2]> {
+    // clones are cheap 16 byte stack copies
+    range[1]
+        .clone()
+        .flat_map(|x| range[0].clone().map(move |y| [x, y]))
 }
