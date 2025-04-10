@@ -25,6 +25,19 @@ pub mod transformers;
 
 use num::Float;
 
+/// Base trait used to define SDFs. See traits like [`combinators::SdfCombinationOperations`] and
+/// [`transformers::SdfTransformOperations`] for additional features.
 pub trait Sdf<Scalar: Float, const DIM: usize> {
+    /// Evaluates the distance from the point passed in as a parameter to the object described by
+    /// the SDF. The distance is positive if outside of the object, negative if inside, and 0 on the
+    /// surface.
+    /// # Example
+    /// ```rust
+    /// use lightwalk::prelude::*;
+    ///
+    /// let sphere = Sphere.translate(&[1.0, 2.0, 3.0]);
+    ///
+    /// let distance = sphere.distance(&[3.0, 2.0, 1.0]);
+    /// ```
     fn distance(&self, point: &[Scalar; DIM]) -> Scalar;
 }
