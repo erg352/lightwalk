@@ -33,3 +33,8 @@ pub trait SdfTransformOperations<Scalar: Float, const DIM: usize>:
         Rounded::new(self, factor)
     }
 }
+
+impl<T, Scalar: Float, const DIM: usize> SdfTransformOperations<Scalar, DIM> for T where
+    T: Sdf<Scalar, DIM>
+{
+}
