@@ -108,7 +108,7 @@ impl<T: Sdf<f64, 3>> DRotated3d<T> {
 
 pub trait SdfRotation2dOperations<Scalar: Float>: Sdf<Scalar, 2> + Sized {
     #[inline]
-    fn rotate(self, rotation: Scalar) -> Rotated2d<Scalar, Self> {
+    fn rotate_2d(self, rotation: Scalar) -> Rotated2d<Scalar, Self> {
         Rotated2d::new(self, rotation)
     }
 }
@@ -122,7 +122,11 @@ pub trait SdfRotation3dOperations: Sdf<f32, 3> + Sized {
 
 pub trait SdfDRotation3dOperations: Sdf<f64, 3> + Sized {
     #[inline]
-    fn rotate(self, rotation: DQuat) -> DRotated3d<Self> {
+    fn rotate_64(self, rotation: DQuat) -> DRotated3d<Self> {
         DRotated3d::new(self, rotation)
     }
 }
+
+impl<T, Scalar: Float> SdfRotation2dOperations<Scalar> for T where Self: Sdf<Scalar, 2> + Sized {}
+impl<T> SdfRotation3dOperations for T where Self: Sdf<f32, 3> + Sized {}
+impl<T> SdfDRotation3dOperations for T where Self: Sdf<f64, 3> + Sized {}

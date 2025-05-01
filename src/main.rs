@@ -17,11 +17,12 @@
 
 use std::hint::black_box;
 
-use lightwalk::{Sdf, prelude::*};
+use glam::Quat;
+use lightwalk::prelude::*;
 
 #[inline(never)]
 fn inner_fn(value: f32) -> f32 {
-    let cube = Cube.scale(3.).round(0.4);
+    let cube = Cube.scale(3f32).round(0.4).rotate(Quat::IDENTITY);
     let sphere = Sphere.translate(&[1., 2., 3.]);
     let sdf = sphere.add(cube).in_box();
 
