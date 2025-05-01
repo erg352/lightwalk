@@ -15,14 +15,38 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-mod boxed;
-mod operations;
-mod rounding;
-mod scale;
-mod translation;
+use crate::Sdf;
+use num::Float;
+use std::array;
 
-pub use boxed::Boxed;
-pub use operations::SdfTransformOperations;
-pub use rounding::Rounded;
-pub use scale::Scaled;
-pub use translation::Translated;
+#[derive(Debug, Clone, Copy, PartialEq, Hash)]
+pub struct Scaled<Scalar: Float, T, const DIM: usize>
+where
+    T: Sdf<Scalar, DIM>,
+{
+    inner: T,
+    scale: Scalar,
+}
+
+impl<Scalar: Float, T, const DIM: usize> Sdf<Scalar, DIM> for Scaled<Scalar, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
+{
+    #[inline]
+    fn distance(&self, point: &[Scalar; DIM]) -> Scalar {
+        let inv_scale = Scalar::one() / self.scale;
+        self.inner
+            .distance(&array::from_fn(|i| point[i] * inv_scale))
+            * self.scale
+    }
+}
+
+impl<Scalar: Float, T, const DIM: usize> Scaled<Scalar, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
+{
+    #[inline]
+    pub fn new(inner: T, scale: Scalar) -> Self {
+        Self { inner, scale }
+    }
+}

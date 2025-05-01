@@ -18,7 +18,7 @@
 use crate::Sdf;
 use num::Float;
 
-use super::{Boxed, Rounded, Translated};
+use super::{Boxed, Rounded, Scaled, Translated};
 
 pub trait SdfTransformOperations<Scalar: Float, const DIM: usize>:
     Sdf<Scalar, DIM> + Sized
@@ -26,6 +26,11 @@ pub trait SdfTransformOperations<Scalar: Float, const DIM: usize>:
     #[inline]
     fn translate(self, translation: &[Scalar; DIM]) -> Translated<Scalar, Self, DIM> {
         Translated::new(self, translation)
+    }
+
+    #[inline]
+    fn scale(self, scale: Scalar) -> Scaled<Scalar, Self, DIM> {
+        Scaled::new(self, scale)
     }
 
     #[inline]
