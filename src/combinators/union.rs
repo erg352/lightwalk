@@ -36,10 +36,10 @@ where
     Rhs: Sdf<Scalar, DIM>,
 {
     #[inline]
-    fn distance_from_array(&self, point: &[Scalar; DIM]) -> Scalar {
+    fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
         self.lhs
-            .distance_from_array(point)
-            .min(self.rhs.distance_from_array(point))
+            .distance_from_slice(point)
+            .min(self.rhs.distance_from_slice(point))
     }
 }
 

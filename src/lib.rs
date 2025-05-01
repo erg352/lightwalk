@@ -39,16 +39,16 @@ pub trait Sdf<Scalar: Float, const DIM: usize> {
     ///
     /// let distance = sphere.distance(&[3.0, 2.0, 1.0]);
     /// ```
-    fn distance_from_array(&self, point: &[Scalar; DIM]) -> Scalar;
+    fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar;
 
     fn distance_ref<'a>(&self, point: impl Into<&'a [Scalar; DIM]>) -> Scalar
     where
         Scalar: 'a,
     {
-        self.distance_from_array(point.into())
+        self.distance_from_slice(point.into())
     }
 
     fn distance(&self, point: impl Into<[Scalar; DIM]>) -> Scalar {
-        self.distance_from_array(&point.into())
+        self.distance_from_slice(&point.into())
     }
 }

@@ -30,8 +30,8 @@ where
     T: Sdf<Scalar, DIM>,
 {
     #[inline]
-    fn distance_from_array(&self, point: &[Scalar; DIM]) -> Scalar {
-        self.0.distance_from_array(point)
+    fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
+        self.0.distance_from_slice(point)
     }
 }
 

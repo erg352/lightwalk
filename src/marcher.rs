@@ -53,7 +53,7 @@ where
                 return None;
             }
 
-            let distance = self.surface.distance_from_array(&position);
+            let distance = self.surface.distance_from_slice(&position);
 
             if distance < self.surface_distance {
                 return Some(Collision {
