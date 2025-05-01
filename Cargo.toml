@@ -20,5 +20,13 @@ name = "lightwalk"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = ["glam"]
+glam = ["dep:glam"]
+
 [dependencies]
 num = "0.4.3"
+
+[dependencies.glam]
+version ="0.30.3"
+optional = true

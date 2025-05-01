@@ -21,8 +21,17 @@ mod rounding;
 mod scale;
 mod translation;
 
+#[cfg(feature = "glam")]
+mod rotation;
+
 pub use boxed::Boxed;
 pub use operations::SdfTransformOperations;
 pub use rounding::Rounded;
 pub use scale::Scaled;
 pub use translation::Translated;
+
+#[cfg(feature = "glam")]
+pub use rotation::{
+    DRotated3d, Rotated2d, Rotated3d, SdfDRotation3dOperations, SdfRotation2dOperations,
+    SdfRotation3dOperations,
+};
