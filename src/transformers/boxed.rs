@@ -15,43 +15,32 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-use crate::Sdf;
-use num::Float;
 use std::marker::PhantomData;
 
-#[derive(Debug, Clone, Copy, PartialEq, Hash)]
-pub struct Union<Scalar: Float, Lhs, Rhs, const DIM: usize>
-where
-    Lhs: Sdf<Scalar, DIM>,
-    Rhs: Sdf<Scalar, DIM>,
-{
-    lhs: Lhs,
-    rhs: Rhs,
-    phantom: PhantomData<Scalar>,
-}
+use crate::Sdf;
+use num::Float;
 
-impl<Scalar: Float, Lhs, Rhs, const DIM: usize> Sdf<Scalar, DIM> for Union<Scalar, Lhs, Rhs, DIM>
+#[derive(Debug, Clone, PartialEq, Hash)]
+pub struct Boxed<Scalar: Float, T, const DIM: usize>(Box<T>, PhantomData<Scalar>)
 where
-    Lhs: Sdf<Scalar, DIM>,
-    Rhs: Sdf<Scalar, DIM>,
+    T: Sdf<Scalar, DIM>;
+
+impl<Scalar: Float, T, const DIM: usize> Sdf<Scalar, DIM> for Boxed<Scalar, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
 {
     #[inline]
     fn distance(&self, point: &[Scalar; DIM]) -> Scalar {
-        self.lhs.distance(point).min(self.rhs.distance(point))
+        self.0.distance(point)
     }
 }
 
-impl<Scalar: Float, Lhs, Rhs, const DIM: usize> Union<Scalar, Lhs, Rhs, DIM>
+impl<Scalar: Float, T, const DIM: usize> Boxed<Scalar, T, DIM>
 where
-    Lhs: Sdf<Scalar, DIM>,
-    Rhs: Sdf<Scalar, DIM>,
+    T: Sdf<Scalar, DIM>,
 {
     #[inline]
-    pub fn new(lhs: Lhs, rhs: Rhs) -> Self {
-        Self {
-            lhs,
-            rhs,
-            phantom: PhantomData,
-        }
+    pub fn new(inner: T) -> Self {
+        Self(Box::new(inner), PhantomData)
     }
 }

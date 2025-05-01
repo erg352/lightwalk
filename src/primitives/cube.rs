@@ -18,6 +18,7 @@
 use crate::Sdf;
 use num::Float;
 
+#[derive(Debug, Clone, Copy, PartialEq, Hash)]
 pub struct Cube;
 
 impl<Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for Cube {

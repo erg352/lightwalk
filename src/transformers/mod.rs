@@ -15,10 +15,12 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+mod boxed;
 mod operations;
 mod rounding;
 mod translation;
 
+pub use boxed::Boxed;
 pub use operations::SdfTransformOperations;
 pub use rounding::Rounded;
 pub use translation::Translated;

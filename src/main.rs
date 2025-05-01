@@ -21,7 +21,8 @@ use lightwalk::{Sdf, prelude::*};
 
 #[inline(never)]
 fn inner_fn(value: f32) -> f32 {
-    Sphere.distance(&[value, value * 2.0])
+    let sdf = Sphere.translate(&[1., 2., 3.]).add(Cube.round(0.4));
+    sdf.distance(&[value, value * 2., value * 3.])
 }
 
 fn main() {

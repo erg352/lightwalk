@@ -19,6 +19,7 @@ use crate::Sdf;
 use num::Float;
 use std::array;
 
+#[derive(Debug, Clone, Copy, PartialEq, Hash)]
 pub struct Translated<Scalar: Float, T, const DIM: usize>
 where
     T: Sdf<Scalar, DIM>,

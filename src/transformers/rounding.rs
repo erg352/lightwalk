@@ -18,6 +18,7 @@
 use crate::Sdf;
 use num::Float;
 
+#[derive(Debug, Clone, Copy, PartialEq, Hash)]
 pub struct Rounded<Scalar: Float, T, const DIM: usize>
 where
     T: Sdf<Scalar, DIM>,
