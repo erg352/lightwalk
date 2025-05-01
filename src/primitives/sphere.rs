@@ -23,7 +23,7 @@ pub struct Sphere;
 
 impl<Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for Sphere {
     #[inline]
-    fn distance(&self, point: &[Scalar; DIM]) -> Scalar {
+    fn distance_from_array(&self, point: &[Scalar; DIM]) -> Scalar {
         let value: Scalar = if DIM == 1 {
             // The squaring of the scalar followed by the square root may not get optimized out
             // when DIM == 1. The if statement is optimized out as DIM is constant with regards to

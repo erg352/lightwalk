@@ -33,9 +33,9 @@ where
     T: Sdf<Scalar, DIM>,
 {
     #[inline]
-    fn distance(&self, point: &[Scalar; DIM]) -> Scalar {
+    fn distance_from_array(&self, point: &[Scalar; DIM]) -> Scalar {
         self.inner
-            .distance(&array::from_fn(|i| point[i] + self.inverse_translation[i]))
+            .distance_from_array(&array::from_fn(|i| point[i] + self.inverse_translation[i]))
     }
 }
 

@@ -37,8 +37,10 @@ where
     Rhs: Sdf<Scalar, DIM>,
 {
     #[inline]
-    fn distance(&self, point: &[Scalar; DIM]) -> Scalar {
-        self.lhs.distance(point).max(self.rhs.distance(point))
+    fn distance_from_array(&self, point: &[Scalar; DIM]) -> Scalar {
+        self.lhs
+            .distance_from_array(point)
+            .max(self.rhs.distance_from_array(point))
     }
 }
 
