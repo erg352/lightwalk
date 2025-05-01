@@ -15,23 +15,40 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-mod boxed;
-mod operations;
-mod repetition;
-#[cfg(feature = "glam")]
-mod rotation;
-mod rounding;
-mod scale;
-mod translation;
+use crate::Sdf;
+use num::Float;
+use std::array;
 
-pub use boxed::Boxed;
-pub use operations::SdfTransformOperations;
-pub use repetition::Repeated;
-#[cfg(feature = "glam")]
-pub use rotation::{
-    DRotated3d, Rotated2d, Rotated3d, SdfDRotation3dOperations, SdfRotation2dOperations,
-    SdfRotation3dOperations,
-};
-pub use rounding::Rounded;
-pub use scale::Scaled;
-pub use translation::Translated;
+#[derive(Debug, Clone, Copy, PartialEq, Hash)]
+pub struct Repeated<Scalar: Float, T, const DIM: usize>
+where
+    T: Sdf<Scalar, DIM>,
+{
+    inner: T,
+    repeat_spacing: [Scalar; DIM],
+}
+
+impl<Scalar: Float, T, const DIM: usize> Sdf<Scalar, DIM> for Repeated<Scalar, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
+{
+    #[inline]
+    fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
+        self.inner.distance_from_slice(&array::from_fn(|i| {
+            point[i] - self.repeat_spacing[i] * (point[i] / self.repeat_spacing[i]).round()
+        }))
+    }
+}
+
+impl<Scalar: Float, T, const DIM: usize> Repeated<Scalar, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
+{
+    #[inline]
+    pub fn new(inner: T, repeat_spacing: [Scalar; DIM]) -> Self {
+        Self {
+            inner,
+            repeat_spacing,
+        }
+    }
+}

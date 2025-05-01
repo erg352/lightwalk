@@ -18,7 +18,7 @@
 use crate::Sdf;
 use num::Float;
 
-use super::{Boxed, Rounded, Scaled, Translated};
+use super::{Boxed, Repeated, Rounded, Scaled, Translated};
 
 pub trait SdfTransformOperations<Scalar: Float, const DIM: usize>:
     Sdf<Scalar, DIM> + Sized
@@ -36,6 +36,11 @@ pub trait SdfTransformOperations<Scalar: Float, const DIM: usize>:
     #[inline]
     fn round(self, factor: Scalar) -> Rounded<Scalar, Self, DIM> {
         Rounded::new(self, factor)
+    }
+
+    #[inline]
+    fn repeat(self, repeat_spacing: impl Into<[Scalar; DIM]>) -> Repeated<Scalar, Self, DIM> {
+        Repeated::new(self, repeat_spacing.into())
     }
 
     #[inline]
