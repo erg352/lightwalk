@@ -1,5 +1,9 @@
 # LightWalk
 
+> [!WARNING]
+> This crate is in VERY early development: bugs are bound to happen, and I intend on breaking things as I go. PLEASE consider NOT using
+> this crate in a serious project for the time being. Thank you for your patience <3
+
 Lightwalk is a lightweight CPU-driven SDF (signed distance field) rust crate.
 
 Why you might want to use this crate:
