@@ -18,7 +18,7 @@
 use crate::Sdf;
 use num::Float;
 
-use super::{Intersection, Union};
+use super::{Difference, Intersection, Union};
 
 pub trait SdfCombinationOperations<Scalar: Float, Rhs, const DIM: usize>:
     Sdf<Scalar, DIM> + Sized
@@ -33,6 +33,11 @@ where
     #[inline]
     fn mul(self, rhs: Rhs) -> Intersection<Scalar, Self, Rhs, DIM> {
         Intersection::new(self, rhs)
+    }
+
+    #[inline]
+    fn sub(self, rhs: Rhs) -> Difference<Scalar, Self, Rhs, DIM> {
+        Difference::new(self, rhs)
     }
 }
 

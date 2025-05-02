@@ -15,12 +15,48 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-mod difference;
-mod intersection;
-mod operations;
-mod union;
+use crate::{Sdf, prelude::Inverted};
+use num::Float;
+use std::marker::PhantomData;
 
-pub use difference::Difference;
-pub use intersection::Intersection;
-pub use operations::SdfCombinationOperations;
-pub use union::Union;
+use super::SdfCombinationOperations;
+
+#[derive(Debug, Clone, Copy, PartialEq, Hash)]
+pub struct Difference<Scalar: Float, Lhs, Rhs, const DIM: usize>
+where
+    Lhs: Sdf<Scalar, DIM>,
+    Rhs: Sdf<Scalar, DIM>,
+{
+    lhs: Lhs,
+    rhs: Rhs,
+    phantom: PhantomData<Scalar>,
+}
+
+impl<Scalar: Float, Lhs, Rhs, const DIM: usize> Sdf<Scalar, DIM>
+    for Difference<Scalar, Lhs, Rhs, DIM>
+where
+    Lhs: Sdf<Scalar, DIM>,
+    Rhs: Sdf<Scalar, DIM>,
+{
+    #[inline]
+    fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
+        (&self.lhs)
+            .mul(Inverted::new(&self.rhs))
+            .distance_from_slice(point)
+    }
+}
+
+impl<Scalar: Float, Lhs, Rhs, const DIM: usize> Difference<Scalar, Lhs, Rhs, DIM>
+where
+    Lhs: Sdf<Scalar, DIM>,
+    Rhs: Sdf<Scalar, DIM>,
+{
+    #[inline]
+    pub fn new(lhs: Lhs, rhs: Rhs) -> Self {
+        Self {
+            lhs,
+            rhs,
+            phantom: PhantomData,
+        }
+    }
+}

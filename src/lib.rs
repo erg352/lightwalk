@@ -50,3 +50,12 @@ pub trait Sdf<Scalar: Float, const DIM: usize> {
         self.distance_from_slice(&point.into())
     }
 }
+
+impl<'a, T, Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for &T
+where
+    T: Sdf<Scalar, DIM>,
+{
+    fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
+        (*self).distance_from_slice(point)
+    }
+}
