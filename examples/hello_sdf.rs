@@ -18,7 +18,7 @@ fn main() {
 
     // SDFs can be created from primitives without thickness, but it may be wise to specify a
     // thickness!
-    let line = line([1., 1.]).thickness(0.4);
+    let line = line([-1., 1.]).thickness(0.4);
 
     // We can compose multiple SDFs together so long as they are in the same dimension (here, they
     // are both 2D) and have the same scalar type. (Or float type. Here, both are f32s.)
