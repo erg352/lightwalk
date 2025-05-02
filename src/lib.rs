@@ -21,6 +21,8 @@ pub mod marcher;
 pub mod prelude;
 pub mod sdf;
 
+use std::ops::Deref;
+
 use num::Float;
 
 /// Base trait used to define SDFs. See traits like [`sdf::combinators::SdfCombinationOperations`] and
@@ -51,11 +53,13 @@ pub trait Sdf<Scalar: Float, const DIM: usize> {
     }
 }
 
-impl<T, Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for &T
+impl<T, U, Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for T
 where
-    T: Sdf<Scalar, DIM>,
+    T: Deref<Target = U>,
+    U: Sdf<Scalar, DIM>,
 {
+    #[inline]
     fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
-        (*self).distance_from_slice(point)
+        self.deref().distance_from_slice(point)
     }
 }
