@@ -16,7 +16,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 mod cube;
+mod plane;
 mod sphere;
 
 pub use cube::Cube;
+pub use plane::Plane;
 pub use sphere::Sphere;
