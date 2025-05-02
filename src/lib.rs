@@ -51,7 +51,7 @@ pub trait Sdf<Scalar: Float, const DIM: usize> {
     }
 }
 
-impl<'a, T, Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for &T
+impl<T, Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for &T
 where
     T: Sdf<Scalar, DIM>,
 {
