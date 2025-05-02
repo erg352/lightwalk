@@ -18,43 +18,26 @@
 use crate::Sdf;
 use num::Float;
 
-use super::{Boxed, Repeated, Rounded, Scaled, Thickened, Translated};
+/// Adds thickness to the SDF. All points who's absolute distance to the surface of the SDF are
+/// less than the specified thickness are "inside" the new SDF, and all other points are "outside".
+pub struct Thickened<Scalar: Float, T: Sdf<Scalar, DIM>, const DIM: usize> {
+    inner: T,
+    thickness: Scalar,
+}
 
-pub trait SdfTransformOperations<Scalar: Float, const DIM: usize>:
-    Sdf<Scalar, DIM> + Sized
+impl<Scalar: Float, T, const DIM: usize> Sdf<Scalar, DIM> for Thickened<Scalar, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
 {
-    #[inline]
-    fn translate(self, translation: &[Scalar; DIM]) -> Translated<Scalar, Self, DIM> {
-        Translated::new(self, translation)
-    }
+    fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
+        let base_sdf = self.inner.distance_from_slice(point);
 
-    #[inline]
-    fn scale(self, scale: Scalar) -> Scaled<Scalar, Self, DIM> {
-        Scaled::new(self, scale)
-    }
-
-    #[inline]
-    fn round(self, factor: Scalar) -> Rounded<Scalar, Self, DIM> {
-        Rounded::new(self, factor)
-    }
-
-    #[inline]
-    fn repeat(self, repeat_spacing: impl Into<[Scalar; DIM]>) -> Repeated<Scalar, Self, DIM> {
-        Repeated::new(self, repeat_spacing.into())
-    }
-
-    #[inline]
-    fn thickness(self, thickness: Scalar) -> Thickened<Scalar, Self, DIM> {
-        Thickened::new(self, thickness)
-    }
-
-    #[inline]
-    fn in_box(self) -> Boxed<Scalar, Self, DIM> {
-        Boxed::new(self)
+        base_sdf.abs() - self.thickness
     }
 }
 
-impl<T, Scalar: Float, const DIM: usize> SdfTransformOperations<Scalar, DIM> for T where
-    T: Sdf<Scalar, DIM>
-{
+impl<Scalar: Float, T: Sdf<Scalar, DIM>, const DIM: usize> Thickened<Scalar, T, DIM> {
+    pub fn new(inner: T, thickness: Scalar) -> Self {
+        Self { inner, thickness }
+    }
 }

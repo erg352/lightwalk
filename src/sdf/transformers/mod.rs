@@ -22,6 +22,7 @@ mod repetition;
 mod rotation;
 mod rounding;
 mod scale;
+mod thickened;
 mod translation;
 
 pub use boxed::Boxed;
@@ -34,4 +35,5 @@ pub use rotation::{
 };
 pub use rounding::Rounded;
 pub use scale::Scaled;
+pub use thickened::Thickened;
 pub use translation::Translated;
