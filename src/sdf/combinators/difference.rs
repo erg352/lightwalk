@@ -15,11 +15,12 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-use crate::{Sdf, prelude::Inverted};
+use crate::Sdf;
 use num::Float;
 use std::marker::PhantomData;
 
 use super::SdfCombinationOperations;
+use crate::sdf::transformers::SdfTransformOperations;
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
 pub struct Difference<Scalar: Float, Lhs, Rhs, const DIM: usize>
@@ -40,9 +41,8 @@ where
 {
     #[inline]
     fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
-        (&self.lhs)
-            .mul(Inverted::new(&self.rhs))
-            .distance_from_slice(point)
+        let sdf = (&self.lhs).mul((&self.rhs).invert());
+        sdf.distance_from_slice(point)
     }
 }
 
