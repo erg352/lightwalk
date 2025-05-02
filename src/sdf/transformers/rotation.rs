@@ -25,7 +25,19 @@ where
     T: Sdf<Scalar, 2>,
 {
     inner: T,
-    inverse_rotation: Scalar,
+
+    // NOTE: We Store Sine and Cosine instead of the angle to only perform the trigonometry once instead
+    // of on each call to distance. This should SIGNIFICANTLY improve performance, as the call to
+    // the trig function is the major bottleneck of 2D rotation.
+    //
+    // NOTE: Place Sine before Cosine as ___sincosf_stret (found in Apple Silicon) returns Sine in s0 and
+    // Cosine in s1. If we have Cosine be placed before Sine, we may need 3 fmov operations to
+    // swap the position of the data.
+    //
+    // TODO: This optimisation is done assuming other operating systems use a similar convention.
+    // We should further investigate on Linux and Windows and on different CPU architectures.
+    sin: Scalar,
+    cos: Scalar,
 }
 
 impl<Scalar: Float, T> Sdf<Scalar, 2> for Rotated2d<Scalar, T>
@@ -34,11 +46,11 @@ where
 {
     #[inline]
     fn distance_from_slice(&self, point: &[Scalar; 2]) -> Scalar {
-        let cos_angle = self.inverse_rotation.cos();
-        let sin_angle = self.inverse_rotation.sin();
+        // We need to rotate the input by the inverse of the specified rotation, hence the - sign
+        // being on the Y coordinate's sine and not the X coordinate's sine.
         let point = [
-            cos_angle * point[0] - sin_angle * point[1],
-            sin_angle * point[0] + cos_angle * point[1],
+            self.cos * point[0] + self.sin * point[1],
+            -self.sin * point[0] + self.cos * point[1],
         ];
 
         self.inner.distance_from_slice(&point)
@@ -53,7 +65,8 @@ where
     pub fn new(inner: T, rotation: Scalar) -> Self {
         Self {
             inner,
-            inverse_rotation: -rotation,
+            cos: rotation.cos(),
+            sin: rotation.sin(),
         }
     }
 }
