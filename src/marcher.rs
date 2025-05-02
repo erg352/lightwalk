@@ -79,6 +79,7 @@ where
         }
 
         for [_x, _y] in iter_pairs(&[0..res, 0..res]) {
+            #[allow(unused)]
             let ray = Ray {
                 origin: todo!(),
                 direction: todo!(),
