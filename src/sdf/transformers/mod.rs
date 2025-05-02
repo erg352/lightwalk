@@ -16,6 +16,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 mod boxed;
+mod inverted;
 mod operations;
 mod repetition;
 #[cfg(feature = "glam")]
@@ -26,6 +27,7 @@ mod thickened;
 mod translation;
 
 pub use boxed::Boxed;
+pub use inverted::Inverted;
 pub use operations::SdfTransformOperations;
 pub use repetition::Repeated;
 #[cfg(feature = "glam")]

@@ -15,51 +15,32 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+use std::marker::PhantomData;
+
 use crate::Sdf;
 use num::Float;
 
-use super::{Boxed, Inverted, Repeated, Rounded, Scaled, Thickened, Translated};
+#[derive(Debug, Clone, PartialEq, Hash)]
+pub struct Inverted<Scalar: Float, T, const DIM: usize>(T, PhantomData<Scalar>)
+where
+    T: Sdf<Scalar, DIM>;
 
-pub trait SdfTransformOperations<Scalar: Float, const DIM: usize>:
-    Sdf<Scalar, DIM> + Sized
+impl<Scalar: Float, T, const DIM: usize> Sdf<Scalar, DIM> for Inverted<Scalar, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
 {
     #[inline]
-    fn translate(self, translation: &[Scalar; DIM]) -> Translated<Scalar, Self, DIM> {
-        Translated::new(self, translation)
-    }
-
-    #[inline]
-    fn scale(self, scale: Scalar) -> Scaled<Scalar, Self, DIM> {
-        Scaled::new(self, scale)
-    }
-
-    #[inline]
-    fn round(self, factor: Scalar) -> Rounded<Scalar, Self, DIM> {
-        Rounded::new(self, factor)
-    }
-
-    #[inline]
-    fn repeat(self, repeat_spacing: impl Into<[Scalar; DIM]>) -> Repeated<Scalar, Self, DIM> {
-        Repeated::new(self, repeat_spacing.into())
-    }
-
-    #[inline]
-    fn thickness(self, thickness: Scalar) -> Thickened<Scalar, Self, DIM> {
-        Thickened::new(self, thickness)
-    }
-
-    #[inline]
-    fn invert(self) -> Inverted<Scalar, Self, DIM> {
-        Inverted::new(self)
-    }
-
-    #[inline]
-    fn in_box(self) -> Boxed<Scalar, Self, DIM> {
-        Boxed::new(self)
+    fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
+        -self.0.distance_from_slice(point)
     }
 }
 
-impl<T, Scalar: Float, const DIM: usize> SdfTransformOperations<Scalar, DIM> for T where
-    T: Sdf<Scalar, DIM>
+impl<Scalar: Float, T, const DIM: usize> Inverted<Scalar, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
 {
+    #[inline]
+    pub fn new(inner: T) -> Self {
+        Self(inner, PhantomData)
+    }
 }
