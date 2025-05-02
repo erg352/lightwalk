@@ -16,7 +16,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 pub use crate::Sdf;
-pub use crate::combinators::*;
 pub use crate::marcher::*;
-pub use crate::primitives::*;
-pub use crate::transformers::*;
+pub use crate::sdf::combinators::*;
+pub use crate::sdf::primitives::*;
+pub use crate::sdf::transformers::*;

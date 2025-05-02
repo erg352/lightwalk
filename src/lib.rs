@@ -17,11 +17,9 @@
 
 #![doc = include_str!("../docs/lib.rs.md")]
 
-pub mod combinators;
 pub mod marcher;
 pub mod prelude;
-pub mod primitives;
-pub mod transformers;
+pub mod sdf;
 
 use num::Float;
 
