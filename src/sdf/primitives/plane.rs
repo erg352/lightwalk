@@ -5,6 +5,7 @@ use num::Float;
 /// is positive will be "outside" the SDF shape and the other points will be "Inside". The
 /// hyperplane passes by the origin of the World.
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
 pub struct Plane<Scalar: Float, const DIM: usize> {
     normal: [Scalar; DIM],
 }

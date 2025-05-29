@@ -2,6 +2,7 @@ use crate::Sdf;
 use num::Float;
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
 pub struct Sphere;
 
 impl<Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for Sphere {

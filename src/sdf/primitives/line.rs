@@ -2,6 +2,7 @@ use num::Float;
 
 use crate::Sdf;
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
 pub struct Line<Scalar: Float, const DIM: usize> {
     direction: [Scalar; DIM],
 }

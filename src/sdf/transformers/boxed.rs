@@ -4,6 +4,7 @@ use crate::Sdf;
 use num::Float;
 
 #[derive(Debug, Clone, PartialEq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
 pub struct Boxed<Scalar: Float, T, const DIM: usize>(Box<T>, PhantomData<Scalar>)
 where
     T: Sdf<Scalar, DIM>;

@@ -3,6 +3,7 @@ use num::Float;
 use std::marker::PhantomData;
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
 pub struct Union<Scalar: Float, Lhs, Rhs, const DIM: usize>
 where
     Lhs: Sdf<Scalar, DIM>,

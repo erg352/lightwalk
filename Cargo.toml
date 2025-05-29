@@ -7,6 +7,7 @@ edition = "2024"
 default = ["glam", "shader"]
 glam = ["dep:glam"]
 shader = []
+serde = ["dep:serde"]
 
 [dependencies]
 num = "0.4.3"
@@ -15,3 +16,7 @@ num = "0.4.3"
 version ="0.30.3"
 optional = true
 
+[dependencies.serde]
+version = "1.0.219"
+optional = true
+features = ["derive"]
