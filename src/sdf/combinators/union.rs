@@ -41,3 +41,43 @@ where
         }
     }
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
+pub struct IterUnion<Scalar: Float, I, T, const DIM: usize>
+where
+    T: Sdf<Scalar, DIM>,
+    I: Iterator<Item = T> + Clone,
+{
+    iter: I,
+    phantom: PhantomData<Scalar>,
+}
+
+impl<Scalar: Float, I, T, const DIM: usize> Sdf<Scalar, DIM> for IterUnion<Scalar, I, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
+    I: Iterator<Item = T> + Clone,
+{
+    #[inline]
+    fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
+        self.iter
+            .clone()
+            .map(|sdf| sdf.distance_from_slice(point))
+            .reduce(|acc, e| acc.min(e))
+            .unwrap_or(Scalar::infinity())
+    }
+}
+
+impl<Scalar: Float, I, T, const DIM: usize> IterUnion<Scalar, I, T, DIM>
+where
+    T: Sdf<Scalar, DIM>,
+    I: Iterator<Item = T> + Clone,
+{
+    #[inline]
+    pub fn new(iter: I) -> Self {
+        Self {
+            iter,
+            phantom: PhantomData,
+        }
+    }
+}
