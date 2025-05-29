@@ -1,20 +1,3 @@
-// Copyright © 2025 Ambre Guyot
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
-// and associated documentation files (the “Software”), to deal in the Software without restriction,
-// including without limitation the rights to use, copy, modify, merge, publish, distribute,
-// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all copies or
-// substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 use crate::Sdf;
 use num::Float;
 
@@ -63,5 +46,45 @@ impl<Scalar: Float, const DIM: usize> Plane<Scalar, DIM> {
 
         // Safety: We just normalized the input, so we are good to go!
         unsafe { Self::new_unchecked(normal) }
+    }
+}
+
+#[cfg(feature = "shader")]
+mod shader_impls {
+    use super::Plane;
+    use crate::sdf::shader::GpuSdf;
+    use std::borrow::Cow;
+
+    impl GpuSdf for Plane<f32, 1> {
+        fn emit_gpu_fn(&self) -> String {
+            todo!()
+        }
+
+        #[inline]
+        fn gpu_fn_name(&self) -> Cow<'static, str> {
+            Cow::Borrowed("plane_1d")
+        }
+    }
+
+    impl GpuSdf for Plane<f32, 2> {
+        fn emit_gpu_fn(&self) -> String {
+            todo!()
+        }
+
+        #[inline]
+        fn gpu_fn_name(&self) -> Cow<'static, str> {
+            Cow::Borrowed("plane_2d")
+        }
+    }
+
+    impl GpuSdf for Plane<f32, 3> {
+        fn emit_gpu_fn(&self) -> String {
+            todo!()
+        }
+
+        #[inline]
+        fn gpu_fn_name(&self) -> Cow<'static, str> {
+            Cow::Borrowed("plane_3d")
+        }
     }
 }

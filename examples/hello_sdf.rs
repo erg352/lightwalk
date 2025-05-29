@@ -2,7 +2,7 @@ use std::f32::consts::PI;
 
 // The prelude contains all the types and traits we need to use lightweight and is recommended to
 // avoid an overabundance of 'use' statements.
-use lightwalk::prelude::*;
+use lightwalk::{prelude::*, sdf::shader::GpuSdf};
 
 fn main() {
     // We can define SDFs using primitives like spheres and cubes, and transforming them using a
@@ -29,4 +29,8 @@ fn main() {
     let distance_to_scene = combined.distance([-2., -2.]);
 
     println!("Distance to scene: {distance_to_scene}");
+
+    let sdf = Plane::new([-1f32, 1f32]);
+
+    println!("{}", sdf.gpu_fn_name());
 }

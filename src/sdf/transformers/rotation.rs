@@ -1,24 +1,20 @@
-// Copyright © 2025 Ambre Guyot
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
-// and associated documentation files (the “Software”), to deal in the Software without restriction,
-// including without limitation the rights to use, copy, modify, merge, publish, distribute,
-// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all copies or
-// substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 use crate::Sdf;
 use glam::{DQuat, DVec3, Quat, Vec3};
 use num::Float;
 
+/// Rotates a 2D SDF based off of a certain angle given in radiants. This struct should not be used
+/// directly, instead it is recommended to use the function
+/// [rotate_2d](crate::sdf::transformers::SdfRotation2dOperations::rotate_2d) defined on any 2D
+/// SDFs that wraps it with this type.
+///
+/// # Example:
+///
+/// ```rust
+/// use lightwalk::prelude::*;
+///
+/// // A 2D cube rotated by 0.4 radiants.
+/// let cube = Cube.rotate_2d(0.4);
+/// ```
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
 pub struct Rotated2d<Scalar: Float, T>
 where
