@@ -66,6 +66,7 @@ where
 {
     type Output = Repeated<Scalar, U, DIM, OutState>;
 
+    #[inline]
     fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
         Repeated::new(self.inner.map_state(f), self.repeat_spacing)
     }

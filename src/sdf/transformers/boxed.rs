@@ -60,6 +60,7 @@ where
 {
     type Output = Boxed<Scalar, U, DIM, OutState>;
 
+    #[inline]
     fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
         Boxed::new(self.0.map_state(f))
     }

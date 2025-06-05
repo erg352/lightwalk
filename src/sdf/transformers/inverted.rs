@@ -60,6 +60,7 @@ where
 {
     type Output = Inverted<Scalar, U, DIM, OutState>;
 
+    #[inline]
     fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
         Inverted::new(self.0.map_state(f))
     }

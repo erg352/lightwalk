@@ -68,6 +68,7 @@ where
 {
     type Output = Scaled<Scalar, U, DIM, OutState>;
 
+    #[inline]
     fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
         Scaled::new(self.inner.map_state(f), self.scale)
     }

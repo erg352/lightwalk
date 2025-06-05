@@ -104,6 +104,7 @@ where
 {
     type Output = Rotated2d<Scalar, U, OutState>;
 
+    #[inline]
     fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
         Rotated2d {
             inner: self.inner.map_state(f),
@@ -170,6 +171,7 @@ where
 {
     type Output = Rotated3d<U, OutState>;
 
+    #[inline]
     fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
         Rotated3d {
             inner: self.inner.map_state(f),
@@ -235,6 +237,7 @@ where
 {
     type Output = DRotated3d<U, OutState>;
 
+    #[inline]
     fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
         DRotated3d {
             inner: self.inner.map_state(f),

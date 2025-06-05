@@ -66,6 +66,7 @@ where
 {
     type Output = Rounded<Scalar, U, DIM, OutState>;
 
+    #[inline]
     fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
         Rounded::new(self.inner.map_state(f), self.factor)
     }

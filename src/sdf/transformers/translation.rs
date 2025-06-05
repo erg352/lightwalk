@@ -69,6 +69,7 @@ where
 {
     type Output = Translated<Scalar, U, DIM, OutState>;
 
+    #[inline]
     fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
         Translated {
             inner: self.inner.map_state(f),
