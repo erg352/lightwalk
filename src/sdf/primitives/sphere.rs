@@ -1,14 +1,11 @@
-use crate::{
-    Sdf, SdfState,
-    sdf::state::{SdfBindStateOperation, SdfMapStateOperation},
-};
+use crate::Sdf;
 use num::Float;
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct Sphere<State: SdfState = ()>(pub(crate) State);
+pub struct Sphere;
 
-impl<Scalar: Float, const DIM: usize, State: SdfState> Sdf<Scalar, DIM, State> for Sphere<State> {
+impl<Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for Sphere {
     #[inline]
     fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
         let value: Scalar = if DIM == 1 {
@@ -28,29 +25,5 @@ impl<Scalar: Float, const DIM: usize, State: SdfState> Sdf<Scalar, DIM, State> f
     }
 
     #[inline]
-    fn state(&self, _point: &[Scalar; DIM]) -> State {
-        self.0.clone()
-    }
-}
-
-impl<Scalar: Float, const DIM: usize, State: SdfState> SdfBindStateOperation<Scalar, DIM, State>
-    for Sphere<()>
-{
-    type Output = Sphere<State>;
-
-    #[inline]
-    fn bind(self, s: State) -> Self::Output {
-        Sphere(s)
-    }
-}
-
-impl<Scalar: Float, const DIM: usize, InState: SdfState, OutState: SdfState>
-    SdfMapStateOperation<Scalar, DIM, InState, OutState> for Sphere<InState>
-{
-    type Output = Sphere<OutState>;
-
-    #[inline]
-    fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
-        Sphere((f)(self.0))
-    }
+    fn state(&self, _: &[Scalar; DIM]) {}
 }

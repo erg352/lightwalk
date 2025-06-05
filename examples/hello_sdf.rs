@@ -17,15 +17,12 @@ fn main() {
         .translate(&[-3., 4.]);
 
     // SDFs can be created from primitives without thickness, but it may be wise to specify one!
-    let line = line([-1., 1.])
-        .bind(10f32)
-        .map_state(|f| f * 2.0)
-        .thickness(0.1);
+    let line = line([-1., 1.]).thickness(0.1);
     let d = line.distance([-2.0, 2.0]);
 
     // We can compose multiple SDFs together so long as they are in the same dimension (here, they
     // are both 2D) and have the same scalar type. (Or float type. Here, both are f32s.)
-    let combined = sphere.bind(5f32).add(cube.bind(20f32)).add(line);
+    let combined = Sphere.add(Cube).add(line);
 
     // We can sample the SDF at a point in space by calling the distance function (or others, like
     // distance_ref) to get the distance at said point to the shape we described earlier.

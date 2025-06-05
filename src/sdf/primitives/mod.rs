@@ -12,15 +12,15 @@ use num::Float;
 
 #[inline]
 pub fn sphere() -> Sphere {
-    Sphere(())
+    Sphere
 }
 
 #[inline]
 pub fn cube() -> Cube {
-    Cube(())
+    Cube
 }
 
 #[inline]
 pub fn line<Scalar: Float, const DIM: usize>(direction: [Scalar; DIM]) -> Line<Scalar, DIM> {
-    Line::new(direction, ())
+    Line::new(direction)
 }

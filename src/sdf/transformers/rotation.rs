@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use crate::{Sdf, SdfState, prelude::SdfMapStateOperation, sdf::state::SdfBindStateOperation};
+use crate::{Sdf, SdfState};
 use glam::{DQuat, DVec3, Quat, Vec3};
 use num::Float;
 
@@ -77,44 +77,6 @@ where
     }
 }
 
-impl<Scalar: Float, T, U, State: SdfState> SdfBindStateOperation<Scalar, 2, State>
-    for Rotated2d<Scalar, T, ()>
-where
-    T: SdfBindStateOperation<Scalar, 2, State, Output = U> + 'static,
-    U: Sdf<Scalar, 2, State> + 'static,
-{
-    type Output = Rotated2d<Scalar, U, State>;
-
-    #[inline]
-    fn bind(self, s: State) -> Self::Output {
-        Rotated2d {
-            inner: self.inner.bind(s),
-            cos: self.cos,
-            sin: self.sin,
-            _marker: PhantomData,
-        }
-    }
-}
-
-impl<Scalar: Float, T, U, InState: SdfState, OutState: SdfState>
-    SdfMapStateOperation<Scalar, 2, InState, OutState> for Rotated2d<Scalar, T, InState>
-where
-    T: SdfMapStateOperation<Scalar, 2, InState, OutState, Output = U> + 'static,
-    U: Sdf<Scalar, 2, OutState> + 'static,
-{
-    type Output = Rotated2d<Scalar, U, OutState>;
-
-    #[inline]
-    fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
-        Rotated2d {
-            inner: self.inner.map_state(f),
-            cos: self.cos,
-            sin: self.sin,
-            _marker: PhantomData,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Rotated3d<T: Sdf<f32, 3, State>, State: SdfState> {
     inner: T,
@@ -146,41 +108,6 @@ impl<T: Sdf<f32, 3, State>, State: SdfState> Rotated3d<T, State> {
     }
 }
 
-impl<T, U, State: SdfState> SdfBindStateOperation<f32, 3, State> for Rotated3d<T, ()>
-where
-    T: SdfBindStateOperation<f32, 3, State, Output = U> + 'static,
-    U: Sdf<f32, 3, State> + 'static,
-{
-    type Output = Rotated3d<U, State>;
-
-    #[inline]
-    fn bind(self, s: State) -> Self::Output {
-        Rotated3d {
-            inner: self.inner.bind(s),
-            inverse_rotation: self.inverse_rotation,
-            _marker: PhantomData,
-        }
-    }
-}
-
-impl<T, U, InState: SdfState, OutState: SdfState> SdfMapStateOperation<f32, 3, InState, OutState>
-    for Rotated3d<T, InState>
-where
-    T: SdfMapStateOperation<f32, 3, InState, OutState, Output = U> + 'static,
-    U: Sdf<f32, 3, OutState> + 'static,
-{
-    type Output = Rotated3d<U, OutState>;
-
-    #[inline]
-    fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
-        Rotated3d {
-            inner: self.inner.map_state(f),
-            inverse_rotation: self.inverse_rotation,
-            _marker: PhantomData,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct DRotated3d<T: Sdf<f64, 3, State>, State: SdfState> {
     inner: T,
@@ -207,41 +134,6 @@ impl<T: Sdf<f64, 3, State>, State: SdfState> DRotated3d<T, State> {
         Self {
             inner,
             inverse_rotation: rotation.inverse(),
-            _marker: PhantomData,
-        }
-    }
-}
-
-impl<T, U, State: SdfState> SdfBindStateOperation<f64, 3, State> for DRotated3d<T, ()>
-where
-    T: SdfBindStateOperation<f64, 3, State, Output = U> + 'static,
-    U: Sdf<f64, 3, State> + 'static,
-{
-    type Output = DRotated3d<U, State>;
-
-    #[inline]
-    fn bind(self, s: State) -> Self::Output {
-        DRotated3d {
-            inner: self.inner.bind(s),
-            inverse_rotation: self.inverse_rotation,
-            _marker: PhantomData,
-        }
-    }
-}
-
-impl<T, U, InState: SdfState, OutState: SdfState> SdfMapStateOperation<f64, 3, InState, OutState>
-    for DRotated3d<T, InState>
-where
-    T: SdfMapStateOperation<f64, 3, InState, OutState, Output = U> + 'static,
-    U: Sdf<f64, 3, OutState> + 'static,
-{
-    type Output = DRotated3d<U, OutState>;
-
-    #[inline]
-    fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
-        DRotated3d {
-            inner: self.inner.map_state(f),
-            inverse_rotation: self.inverse_rotation,
             _marker: PhantomData,
         }
     }

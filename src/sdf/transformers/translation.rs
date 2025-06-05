@@ -1,4 +1,4 @@
-use crate::{Sdf, SdfState, prelude::SdfMapStateOperation, sdf::state::SdfBindStateOperation};
+use crate::{Sdf, SdfState};
 use num::Float;
 use std::{array, marker::PhantomData};
 
@@ -38,42 +38,6 @@ where
         Self {
             inner,
             inverse_translation: array::from_fn(|i| tranlation[i].neg()),
-            _marker: PhantomData,
-        }
-    }
-}
-
-impl<Scalar: Float, T, U, const DIM: usize, State: SdfState>
-    SdfBindStateOperation<Scalar, DIM, State> for Translated<Scalar, T, DIM, ()>
-where
-    T: SdfBindStateOperation<Scalar, DIM, State, Output = U> + 'static,
-    U: Sdf<Scalar, DIM, State> + 'static,
-{
-    type Output = Translated<Scalar, U, DIM, State>;
-
-    #[inline]
-    fn bind(self, s: State) -> Self::Output {
-        Translated {
-            inner: self.inner.bind(s),
-            inverse_translation: self.inverse_translation,
-            _marker: PhantomData,
-        }
-    }
-}
-
-impl<Scalar: Float, T, U, const DIM: usize, InState: SdfState, OutState: SdfState>
-    SdfMapStateOperation<Scalar, DIM, InState, OutState> for Translated<Scalar, T, DIM, InState>
-where
-    T: SdfMapStateOperation<Scalar, DIM, InState, OutState, Output = U> + 'static,
-    U: Sdf<Scalar, DIM, OutState> + 'static,
-{
-    type Output = Translated<Scalar, U, DIM, OutState>;
-
-    #[inline]
-    fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
-        Translated {
-            inner: self.inner.map_state(f),
-            inverse_translation: self.inverse_translation,
             _marker: PhantomData,
         }
     }
