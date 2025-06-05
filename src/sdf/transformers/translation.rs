@@ -1,4 +1,4 @@
-use crate::{Sdf, SdfState};
+use crate::{Sdf, SdfState, sdf::state::SdfBindStateOperation};
 use num::Float;
 use std::{array, marker::PhantomData};
 
@@ -33,6 +33,24 @@ where
         Self {
             inner,
             inverse_translation: array::from_fn(|i| tranlation[i].neg()),
+            _marker: PhantomData,
+        }
+    }
+}
+
+impl<Scalar: Float, T, U, const DIM: usize, State: SdfState>
+    SdfBindStateOperation<Scalar, DIM, State> for Translated<Scalar, T, DIM, ()>
+where
+    T: SdfBindStateOperation<Scalar, DIM, State, Output = U> + 'static,
+    U: Sdf<Scalar, DIM, State> + 'static,
+{
+    type Output = Translated<Scalar, U, DIM, State>;
+
+    #[inline]
+    fn bind(self, s: State) -> Self::Output {
+        Translated {
+            inner: self.inner.bind(s),
+            inverse_translation: self.inverse_translation,
             _marker: PhantomData,
         }
     }

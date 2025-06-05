@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use crate::{Sdf, SdfState};
+use crate::{Sdf, SdfState, sdf::state::SdfBindStateOperation};
 use num::Float;
 
 #[derive(Debug, Clone, PartialEq, Hash)]
@@ -30,5 +30,19 @@ where
     #[inline]
     pub fn new(inner: T) -> Self {
         Self(inner, PhantomData)
+    }
+}
+
+impl<Scalar: Float, T, U, const DIM: usize, State: SdfState>
+    SdfBindStateOperation<Scalar, DIM, State> for Inverted<Scalar, T, DIM, ()>
+where
+    T: SdfBindStateOperation<Scalar, DIM, State, Output = U> + 'static,
+    U: Sdf<Scalar, DIM, State> + 'static,
+{
+    type Output = Inverted<Scalar, U, DIM, State>;
+
+    #[inline]
+    fn bind(self, s: State) -> Self::Output {
+        Inverted::new(self.0.bind(s))
     }
 }
