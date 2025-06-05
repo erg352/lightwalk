@@ -22,6 +22,11 @@ where
         self.inner
             .distance_from_slice(&array::from_fn(|i| point[i] + self.inverse_translation[i]))
     }
+
+    #[inline]
+    fn state(&self, point: &[Scalar; DIM]) -> State {
+        self.inner.state(point)
+    }
 }
 
 impl<Scalar: Float, T, const DIM: usize, State: SdfState> Translated<Scalar, T, DIM, State>

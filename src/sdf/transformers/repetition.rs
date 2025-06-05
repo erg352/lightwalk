@@ -23,6 +23,11 @@ where
             point[i] - self.repeat_spacing[i] * (point[i] / self.repeat_spacing[i]).round()
         }))
     }
+
+    #[inline]
+    fn state(&self, point: &[Scalar; DIM]) -> State {
+        self.inner.state(point)
+    }
 }
 
 impl<Scalar: Float, T, const DIM: usize, State: SdfState> Repeated<Scalar, T, DIM, State>

@@ -26,6 +26,11 @@ impl<Scalar: Float, const DIM: usize, State: SdfState> Sdf<Scalar, DIM, State> f
 
         value - Scalar::one()
     }
+
+    #[inline]
+    fn state(&self, _point: &[Scalar; DIM]) -> State {
+        self.0.clone()
+    }
 }
 
 impl<Scalar: Float, const DIM: usize, State: SdfState> SdfBindStateOperation<Scalar, DIM, State>

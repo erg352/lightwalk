@@ -22,6 +22,11 @@ where
 
         base_sdf.abs() - self.thickness
     }
+
+    #[inline]
+    fn state(&self, point: &[Scalar; DIM]) -> State {
+        self.inner.state(point)
+    }
 }
 
 impl<Scalar: Float, T: Sdf<Scalar, DIM, State>, const DIM: usize, State: SdfState>

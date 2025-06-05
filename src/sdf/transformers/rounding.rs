@@ -23,6 +23,11 @@ where
     fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
         self.inner.distance_from_slice(point) - self.factor
     }
+
+    #[inline]
+    fn state(&self, point: &[Scalar; DIM]) -> State {
+        self.inner.state(point)
+    }
 }
 
 impl<Scalar: Float, T, const DIM: usize, State: SdfState> Rounded<Scalar, T, DIM, State>

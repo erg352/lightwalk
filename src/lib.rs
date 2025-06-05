@@ -24,6 +24,8 @@ pub trait Sdf<Scalar: Float, const DIM: usize, State = ()> {
     /// ```
     fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar;
 
+    fn state(&self, point: &[Scalar; DIM]) -> State;
+
     fn distance_ref<'a>(&self, point: impl Into<&'a [Scalar; DIM]>) -> Scalar
     where
         Scalar: 'a,
@@ -35,12 +37,16 @@ pub trait Sdf<Scalar: Float, const DIM: usize, State = ()> {
         self.distance_from_slice(&point.into())
     }
 
-    // fn state(&self) -> &State;
+    #[inline]
+    fn distance_and_state(&self, point: impl Into<[Scalar; DIM]>) -> (Scalar, State) {
+        let point = &point.into();
+        (self.distance_from_slice(point), self.state(point))
+    }
 }
 
-pub trait SdfState {}
+pub trait SdfState: Clone {}
 
-impl<T> SdfState for T {}
+impl<T> SdfState for T where T: Clone {}
 
 impl<T, U, Scalar: Float, const DIM: usize, State: SdfState> Sdf<Scalar, DIM, State> for T
 where
@@ -52,7 +58,7 @@ where
         self.deref().distance_from_slice(point)
     }
 
-    // fn state(&self) -> &State {
-    //     self.deref().state()
-    // }
+    fn state(&self, point: &[Scalar; DIM]) -> State {
+        self.deref().state(point)
+    }
 }

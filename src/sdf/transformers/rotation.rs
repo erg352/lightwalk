@@ -55,6 +55,11 @@ where
 
         self.inner.distance_from_slice(&point)
     }
+
+    #[inline]
+    fn state(&self, point: &[Scalar; 2]) -> State {
+        self.inner.state(point)
+    }
 }
 
 impl<Scalar: Float, T, State: SdfState> Rotated2d<Scalar, T, State>
@@ -104,6 +109,11 @@ impl<T: Sdf<f32, 3, State>, State: SdfState> Sdf<f32, 3, State> for Rotated3d<T,
         let point = (self.inverse_rotation * Vec3::from_array(*point)).to_array();
         self.inner.distance_from_slice(&point)
     }
+
+    #[inline]
+    fn state(&self, point: &[f32; 3]) -> State {
+        self.inner.state(point)
+    }
 }
 
 impl<T: Sdf<f32, 3, State>, State: SdfState> Rotated3d<T, State> {
@@ -146,6 +156,11 @@ impl<T: Sdf<f64, 3, State>, State: SdfState> Sdf<f64, 3, State> for DRotated3d<T
     fn distance_from_slice(&self, point: &[f64; 3]) -> f64 {
         let point = (self.inverse_rotation * DVec3::from_array(*point)).to_array();
         self.inner.distance_from_slice(&point)
+    }
+
+    #[inline]
+    fn state(&self, point: &[f64; 3]) -> State {
+        self.inner.state(point)
     }
 }
 

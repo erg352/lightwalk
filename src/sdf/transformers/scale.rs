@@ -25,6 +25,11 @@ where
             .distance_from_slice(&array::from_fn(|i| point[i] * inv_scale))
             * self.scale
     }
+
+    #[inline]
+    fn state(&self, point: &[Scalar; DIM]) -> State {
+        self.inner.state(point)
+    }
 }
 
 impl<Scalar: Float, T, const DIM: usize, State: SdfState> Scaled<Scalar, T, DIM, State>

@@ -17,6 +17,10 @@ impl<Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for Plane<Scalar, DIM> {
             .zip(self.normal.iter())
             .fold(Scalar::zero(), |acc, e| acc + *e.0 * *e.1)
     }
+
+    fn state(&self, _point: &[Scalar; DIM]) {
+        todo!()
+    }
 }
 
 impl<Scalar: Float, const DIM: usize> Plane<Scalar, DIM> {

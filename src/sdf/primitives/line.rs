@@ -10,6 +10,7 @@ pub struct Line<Scalar: Float, const DIM: usize, State: SdfState = ()> {
     direction: [Scalar; DIM],
     state: State,
 }
+
 impl<Scalar: Float, const DIM: usize, State: SdfState> Sdf<Scalar, DIM, State>
     for Line<Scalar, DIM, State>
 {
@@ -24,6 +25,11 @@ impl<Scalar: Float, const DIM: usize, State: SdfState> Sdf<Scalar, DIM, State>
             .map(|i| point[i] - self.direction[i] * dot)
             .fold(Scalar::zero(), |acc, e| acc + e * e)
             .sqrt()
+    }
+
+    #[inline]
+    fn state(&self, _point: &[Scalar; DIM]) -> State {
+        self.state.clone()
     }
 }
 

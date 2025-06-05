@@ -21,6 +21,11 @@ where
     fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
         self.0.distance_from_slice(point)
     }
+
+    #[inline]
+    fn state(&self, point: &[Scalar; DIM]) -> State {
+        self.0.state(point)
+    }
 }
 
 impl<Scalar: Float, T, const DIM: usize, State: SdfState> Boxed<Scalar, T, DIM, State>
