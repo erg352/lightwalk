@@ -3,7 +3,7 @@ use num::Float;
 
 /// Adds thickness to the SDF. All points who's absolute distance to the surface of the SDF are
 /// less than the specified thickness are "inside" the new SDF, and all other points are "outside".
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Thickened<Scalar: Float, T: Sdf<Scalar, DIM>, const DIM: usize> {
     inner: T,
     thickness: Scalar,

@@ -4,7 +4,7 @@ use crate::Sdf;
 use num::Float;
 
 #[derive(Debug, Clone, PartialEq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Inverted<Scalar: Float, T, const DIM: usize>(T, PhantomData<Scalar>)
 where
     T: Sdf<Scalar, DIM>;

@@ -3,7 +3,7 @@ use num::Float;
 use std::marker::PhantomData;
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Intersection<Scalar: Float, Lhs, Rhs, const DIM: usize>
 where
     Lhs: Sdf<Scalar, DIM>,
@@ -44,7 +44,7 @@ where
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct IterIntersection<Scalar: Float, I, T, const DIM: usize>
 where
     T: Sdf<Scalar, DIM>,

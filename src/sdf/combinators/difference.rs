@@ -6,7 +6,7 @@ use super::SdfCombinationOperations;
 use crate::sdf::transformers::SdfTransformOperations;
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Difference<Scalar: Float, Lhs, Rhs, const DIM: usize>
 where
     Lhs: Sdf<Scalar, DIM>,

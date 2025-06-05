@@ -2,7 +2,7 @@ use crate::Sdf;
 use num::Float;
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Rounded<Scalar: Float, T, const DIM: usize>
 where
     T: Sdf<Scalar, DIM>,

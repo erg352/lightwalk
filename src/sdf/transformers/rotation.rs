@@ -16,7 +16,7 @@ use num::Float;
 /// let cube = Cube.rotate_2d(0.4);
 /// ```
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Rotated2d<Scalar: Float, T>
 where
     T: Sdf<Scalar, 2>,

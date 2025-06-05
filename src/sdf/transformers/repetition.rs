@@ -3,7 +3,6 @@ use num::Float;
 use std::array;
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialze))]
 pub struct Repeated<Scalar: Float, T, const DIM: usize>
 where
     T: Sdf<Scalar, DIM>,
