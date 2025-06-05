@@ -1,4 +1,6 @@
-use crate::Sdf;
+use std::marker::PhantomData;
+
+use crate::{Sdf, SdfState};
 use glam::{DQuat, DVec3, Quat, Vec3};
 use num::Float;
 
@@ -17,9 +19,9 @@ use num::Float;
 /// ```
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct Rotated2d<Scalar: Float, T>
+pub struct Rotated2d<Scalar: Float, T, State: SdfState>
 where
-    T: Sdf<Scalar, 2>,
+    T: Sdf<Scalar, 2, State>,
 {
     inner: T,
 
@@ -35,11 +37,12 @@ where
     // We should further investigate on Linux and Windows and on different CPU architectures.
     sin: Scalar,
     cos: Scalar,
+    _marker: PhantomData<State>,
 }
 
-impl<Scalar: Float, T> Sdf<Scalar, 2> for Rotated2d<Scalar, T>
+impl<Scalar: Float, T, State: SdfState> Sdf<Scalar, 2, State> for Rotated2d<Scalar, T, State>
 where
-    T: Sdf<Scalar, 2>,
+    T: Sdf<Scalar, 2, State>,
 {
     #[inline]
     fn distance_from_slice(&self, point: &[Scalar; 2]) -> Scalar {
@@ -54,9 +57,9 @@ where
     }
 }
 
-impl<Scalar: Float, T> Rotated2d<Scalar, T>
+impl<Scalar: Float, T, State: SdfState> Rotated2d<Scalar, T, State>
 where
-    T: Sdf<Scalar, 2>,
+    T: Sdf<Scalar, 2, State>,
 {
     #[inline]
     pub fn new(inner: T, rotation: Scalar) -> Self {
@@ -64,17 +67,19 @@ where
             inner,
             cos: rotation.cos(),
             sin: rotation.sin(),
+            _marker: PhantomData,
         }
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct Rotated3d<T: Sdf<f32, 3>> {
+pub struct Rotated3d<T: Sdf<f32, 3, State>, State: SdfState> {
     inner: T,
     inverse_rotation: Quat,
+    _marker: PhantomData<State>,
 }
 
-impl<T: Sdf<f32, 3>> Sdf<f32, 3> for Rotated3d<T> {
+impl<T: Sdf<f32, 3, State>, State: SdfState> Sdf<f32, 3, State> for Rotated3d<T, State> {
     #[inline]
     fn distance_from_slice(&self, point: &[f32; 3]) -> f32 {
         let point = (self.inverse_rotation * Vec3::from_array(*point)).to_array();
@@ -82,23 +87,25 @@ impl<T: Sdf<f32, 3>> Sdf<f32, 3> for Rotated3d<T> {
     }
 }
 
-impl<T: Sdf<f32, 3>> Rotated3d<T> {
+impl<T: Sdf<f32, 3, State>, State: SdfState> Rotated3d<T, State> {
     #[inline]
     pub fn new(inner: T, rotation: Quat) -> Self {
         Self {
             inner,
             inverse_rotation: rotation.inverse(),
+            _marker: PhantomData,
         }
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct DRotated3d<T: Sdf<f64, 3>> {
+pub struct DRotated3d<T: Sdf<f64, 3, State>, State: SdfState> {
     inner: T,
     inverse_rotation: DQuat,
+    _marker: PhantomData<State>,
 }
 
-impl<T: Sdf<f64, 3>> Sdf<f64, 3> for DRotated3d<T> {
+impl<T: Sdf<f64, 3, State>, State: SdfState> Sdf<f64, 3, State> for DRotated3d<T, State> {
     #[inline]
     fn distance_from_slice(&self, point: &[f64; 3]) -> f64 {
         let point = (self.inverse_rotation * DVec3::from_array(*point)).to_array();
@@ -106,37 +113,45 @@ impl<T: Sdf<f64, 3>> Sdf<f64, 3> for DRotated3d<T> {
     }
 }
 
-impl<T: Sdf<f64, 3>> DRotated3d<T> {
+impl<T: Sdf<f64, 3, State>, State: SdfState> DRotated3d<T, State> {
     #[inline]
     pub fn new(inner: T, rotation: DQuat) -> Self {
         Self {
             inner,
             inverse_rotation: rotation.inverse(),
+            _marker: PhantomData,
         }
     }
 }
 
-pub trait SdfRotation2dOperations<Scalar: Float>: Sdf<Scalar, 2> + Sized {
+pub trait SdfRotation2dOperations<Scalar: Float, State: SdfState>:
+    Sdf<Scalar, 2, State> + Sized
+{
     #[inline]
-    fn rotate_2d(self, rotation: Scalar) -> Rotated2d<Scalar, Self> {
+    fn rotate_2d(self, rotation: Scalar) -> Rotated2d<Scalar, Self, State> {
         Rotated2d::new(self, rotation)
     }
 }
 
-pub trait SdfRotation3dOperations: Sdf<f32, 3> + Sized {
+pub trait SdfRotation3dOperations<State: SdfState>: Sdf<f32, 3, State> + Sized {
     #[inline]
-    fn rotate(self, rotation: Quat) -> Rotated3d<Self> {
+    fn rotate(self, rotation: Quat) -> Rotated3d<Self, State> {
         Rotated3d::new(self, rotation)
     }
 }
 
-pub trait SdfDRotation3dOperations: Sdf<f64, 3> + Sized {
+pub trait SdfDRotation3dOperations<State: SdfState>: Sdf<f64, 3, State> + Sized {
     #[inline]
-    fn rotate_64(self, rotation: DQuat) -> DRotated3d<Self> {
+    fn rotate_64(self, rotation: DQuat) -> DRotated3d<Self, State> {
         DRotated3d::new(self, rotation)
     }
 }
 
-impl<T, Scalar: Float> SdfRotation2dOperations<Scalar> for T where Self: Sdf<Scalar, 2> + Sized {}
-impl<T> SdfRotation3dOperations for T where Self: Sdf<f32, 3> + Sized {}
-impl<T> SdfDRotation3dOperations for T where Self: Sdf<f64, 3> + Sized {}
+impl<T, Scalar: Float, State: SdfState> SdfRotation2dOperations<Scalar, State> for T where
+    Self: Sdf<Scalar, 2, State> + Sized
+{
+}
+
+impl<T, State: SdfState> SdfRotation3dOperations<State> for T where Self: Sdf<f32, 3, State> + Sized {}
+impl<T, State: SdfState> SdfDRotation3dOperations<State> for T where Self: Sdf<f64, 3, State> + Sized
+{}

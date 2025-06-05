@@ -1,19 +1,21 @@
-use crate::Sdf;
+use crate::{Sdf, SdfState};
 use num::Float;
-use std::array;
+use std::{array, marker::PhantomData};
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
-pub struct Repeated<Scalar: Float, T, const DIM: usize>
+pub struct Repeated<Scalar: Float, T, const DIM: usize, State: SdfState>
 where
-    T: Sdf<Scalar, DIM>,
+    T: Sdf<Scalar, DIM, State>,
 {
     inner: T,
     repeat_spacing: [Scalar; DIM],
+    _marker: PhantomData<State>,
 }
 
-impl<Scalar: Float, T, const DIM: usize> Sdf<Scalar, DIM> for Repeated<Scalar, T, DIM>
+impl<Scalar: Float, T, const DIM: usize, State: SdfState> Sdf<Scalar, DIM, State>
+    for Repeated<Scalar, T, DIM, State>
 where
-    T: Sdf<Scalar, DIM>,
+    T: Sdf<Scalar, DIM, State>,
 {
     #[inline]
     fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
@@ -23,15 +25,16 @@ where
     }
 }
 
-impl<Scalar: Float, T, const DIM: usize> Repeated<Scalar, T, DIM>
+impl<Scalar: Float, T, const DIM: usize, State: SdfState> Repeated<Scalar, T, DIM, State>
 where
-    T: Sdf<Scalar, DIM>,
+    T: Sdf<Scalar, DIM, State>,
 {
     #[inline]
     pub fn new(inner: T, repeat_spacing: [Scalar; DIM]) -> Self {
         Self {
             inner,
             repeat_spacing,
+            _marker: PhantomData,
         }
     }
 }

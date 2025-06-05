@@ -1,19 +1,21 @@
-use crate::Sdf;
+use crate::{Sdf, SdfState};
 use num::Float;
-use std::array;
+use std::{array, marker::PhantomData};
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash)]
-pub struct Translated<Scalar: Float, T, const DIM: usize>
+pub struct Translated<Scalar: Float, T, const DIM: usize, State: SdfState>
 where
-    T: Sdf<Scalar, DIM>,
+    T: Sdf<Scalar, DIM, State>,
 {
     inner: T,
     inverse_translation: [Scalar; DIM],
+    _marker: PhantomData<State>,
 }
 
-impl<Scalar: Float, T, const DIM: usize> Sdf<Scalar, DIM> for Translated<Scalar, T, DIM>
+impl<Scalar: Float, T, const DIM: usize, State: SdfState> Sdf<Scalar, DIM, State>
+    for Translated<Scalar, T, DIM, State>
 where
-    T: Sdf<Scalar, DIM>,
+    T: Sdf<Scalar, DIM, State>,
 {
     #[inline]
     fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
@@ -22,15 +24,16 @@ where
     }
 }
 
-impl<Scalar: Float, T, const DIM: usize> Translated<Scalar, T, DIM>
+impl<Scalar: Float, T, const DIM: usize, State: SdfState> Translated<Scalar, T, DIM, State>
 where
-    T: Sdf<Scalar, DIM>,
+    T: Sdf<Scalar, DIM, State>,
 {
     #[inline]
     pub fn new(inner: T, tranlation: &[Scalar; DIM]) -> Self {
         Self {
             inner,
             inverse_translation: array::from_fn(|i| tranlation[i].neg()),
+            _marker: PhantomData,
         }
     }
 }

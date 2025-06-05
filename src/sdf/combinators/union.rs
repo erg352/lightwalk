@@ -1,23 +1,24 @@
-use crate::Sdf;
+use crate::{Sdf, SdfState};
 use num::Float;
 use std::marker::PhantomData;
 
-#[derive(Debug, Clone, Copy, PartialEq, Hash)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct Union<Scalar: Float, Lhs, Rhs, const DIM: usize>
+pub struct Union<Scalar: Float, Lhs, Rhs, const DIM: usize, State: SdfState>
 where
-    Lhs: Sdf<Scalar, DIM>,
-    Rhs: Sdf<Scalar, DIM>,
+    Lhs: Sdf<Scalar, DIM, State>,
+    Rhs: Sdf<Scalar, DIM, State>,
 {
     lhs: Lhs,
     rhs: Rhs,
-    phantom: PhantomData<Scalar>,
+    _marker: PhantomData<(Scalar, State)>,
 }
 
-impl<Scalar: Float, Lhs, Rhs, const DIM: usize> Sdf<Scalar, DIM> for Union<Scalar, Lhs, Rhs, DIM>
+impl<Scalar: Float, Lhs, Rhs, const DIM: usize, State: SdfState> Sdf<Scalar, DIM, State>
+    for Union<Scalar, Lhs, Rhs, DIM, State>
 where
-    Lhs: Sdf<Scalar, DIM>,
-    Rhs: Sdf<Scalar, DIM>,
+    Lhs: Sdf<Scalar, DIM, State>,
+    Rhs: Sdf<Scalar, DIM, State>,
 {
     #[inline]
     fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
@@ -27,35 +28,36 @@ where
     }
 }
 
-impl<Scalar: Float, Lhs, Rhs, const DIM: usize> Union<Scalar, Lhs, Rhs, DIM>
+impl<Scalar: Float, Lhs, Rhs, const DIM: usize, State: SdfState> Union<Scalar, Lhs, Rhs, DIM, State>
 where
-    Lhs: Sdf<Scalar, DIM>,
-    Rhs: Sdf<Scalar, DIM>,
+    Lhs: Sdf<Scalar, DIM, State>,
+    Rhs: Sdf<Scalar, DIM, State>,
 {
     #[inline]
     pub fn new(lhs: Lhs, rhs: Rhs) -> Self {
         Self {
             lhs,
             rhs,
-            phantom: PhantomData,
+            _marker: PhantomData,
         }
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Hash)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct IterUnion<Scalar: Float, I, T, const DIM: usize>
+pub struct IterUnion<Scalar: Float, I, T, const DIM: usize, State: SdfState>
 where
-    T: Sdf<Scalar, DIM>,
+    T: Sdf<Scalar, DIM, State>,
     I: Iterator<Item = T> + Clone,
 {
     iter: I,
-    phantom: PhantomData<Scalar>,
+    _marker: PhantomData<(Scalar, State)>,
 }
 
-impl<Scalar: Float, I, T, const DIM: usize> Sdf<Scalar, DIM> for IterUnion<Scalar, I, T, DIM>
+impl<Scalar: Float, I, T, const DIM: usize, State: SdfState> Sdf<Scalar, DIM, State>
+    for IterUnion<Scalar, I, T, DIM, State>
 where
-    T: Sdf<Scalar, DIM>,
+    T: Sdf<Scalar, DIM, State>,
     I: Iterator<Item = T> + Clone,
 {
     #[inline]
@@ -68,16 +70,16 @@ where
     }
 }
 
-impl<Scalar: Float, I, T, const DIM: usize> IterUnion<Scalar, I, T, DIM>
+impl<Scalar: Float, I, T, const DIM: usize, State: SdfState> IterUnion<Scalar, I, T, DIM, State>
 where
-    T: Sdf<Scalar, DIM>,
+    T: Sdf<Scalar, DIM, State>,
     I: Iterator<Item = T> + Clone,
 {
     #[inline]
     pub fn new(iter: I) -> Self {
         Self {
             iter,
-            phantom: PhantomData,
+            _marker: PhantomData,
         }
     }
 }
