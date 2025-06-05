@@ -1,4 +1,4 @@
-use crate::{Sdf, SdfState, sdf::state::SdfBindStateOperation};
+use crate::{Sdf, SdfState, prelude::SdfMapStateOperation, sdf::state::SdfBindStateOperation};
 use num::Float;
 use std::{array, marker::PhantomData};
 
@@ -55,5 +55,18 @@ where
     #[inline]
     fn bind(self, s: State) -> Self::Output {
         Repeated::new(self.inner.bind(s), self.repeat_spacing)
+    }
+}
+
+impl<Scalar: Float, T, U, const DIM: usize, InState: SdfState, OutState: SdfState>
+    SdfMapStateOperation<Scalar, DIM, InState, OutState> for Repeated<Scalar, T, DIM, InState>
+where
+    T: SdfMapStateOperation<Scalar, DIM, InState, OutState, Output = U> + 'static,
+    U: Sdf<Scalar, DIM, OutState> + 'static,
+{
+    type Output = Repeated<Scalar, U, DIM, OutState>;
+
+    fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
+        Repeated::new(self.inner.map_state(f), self.repeat_spacing)
     }
 }

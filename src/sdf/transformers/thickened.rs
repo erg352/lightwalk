@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use crate::{Sdf, SdfState, sdf::state::SdfBindStateOperation};
+use crate::{Sdf, SdfState, prelude::SdfMapStateOperation, sdf::state::SdfBindStateOperation};
 use num::Float;
 
 /// Adds thickness to the SDF. All points who's absolute distance to the surface of the SDF are
@@ -52,5 +52,18 @@ where
     #[inline]
     fn bind(self, s: State) -> Self::Output {
         Thickened::new(self.inner.bind(s), self.thickness)
+    }
+}
+
+impl<Scalar: Float, T, U, const DIM: usize, InState: SdfState, OutState: SdfState>
+    SdfMapStateOperation<Scalar, DIM, InState, OutState> for Thickened<Scalar, T, DIM, InState>
+where
+    T: SdfMapStateOperation<Scalar, DIM, InState, OutState, Output = U> + 'static,
+    U: Sdf<Scalar, DIM, OutState> + 'static,
+{
+    type Output = Thickened<Scalar, U, DIM, OutState>;
+
+    fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
+        Thickened::new(self.inner.map_state(f), self.thickness)
     }
 }

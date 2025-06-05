@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use crate::{Sdf, SdfState, sdf::state::SdfBindStateOperation};
+use crate::{Sdf, SdfState, prelude::SdfMapStateOperation, sdf::state::SdfBindStateOperation};
 use glam::{DQuat, DVec3, Quat, Vec3};
 use num::Float;
 
@@ -96,6 +96,24 @@ where
     }
 }
 
+impl<Scalar: Float, T, U, InState: SdfState, OutState: SdfState>
+    SdfMapStateOperation<Scalar, 2, InState, OutState> for Rotated2d<Scalar, T, InState>
+where
+    T: SdfMapStateOperation<Scalar, 2, InState, OutState, Output = U> + 'static,
+    U: Sdf<Scalar, 2, OutState> + 'static,
+{
+    type Output = Rotated2d<Scalar, U, OutState>;
+
+    fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
+        Rotated2d {
+            inner: self.inner.map_state(f),
+            cos: self.cos,
+            sin: self.sin,
+            _marker: PhantomData,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Rotated3d<T: Sdf<f32, 3, State>, State: SdfState> {
     inner: T,
@@ -144,6 +162,23 @@ where
     }
 }
 
+impl<T, U, InState: SdfState, OutState: SdfState> SdfMapStateOperation<f32, 3, InState, OutState>
+    for Rotated3d<T, InState>
+where
+    T: SdfMapStateOperation<f32, 3, InState, OutState, Output = U> + 'static,
+    U: Sdf<f32, 3, OutState> + 'static,
+{
+    type Output = Rotated3d<U, OutState>;
+
+    fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
+        Rotated3d {
+            inner: self.inner.map_state(f),
+            inverse_rotation: self.inverse_rotation,
+            _marker: PhantomData,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct DRotated3d<T: Sdf<f64, 3, State>, State: SdfState> {
     inner: T,
@@ -186,6 +221,23 @@ where
     fn bind(self, s: State) -> Self::Output {
         DRotated3d {
             inner: self.inner.bind(s),
+            inverse_rotation: self.inverse_rotation,
+            _marker: PhantomData,
+        }
+    }
+}
+
+impl<T, U, InState: SdfState, OutState: SdfState> SdfMapStateOperation<f64, 3, InState, OutState>
+    for DRotated3d<T, InState>
+where
+    T: SdfMapStateOperation<f64, 3, InState, OutState, Output = U> + 'static,
+    U: Sdf<f64, 3, OutState> + 'static,
+{
+    type Output = DRotated3d<U, OutState>;
+
+    fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
+        DRotated3d {
+            inner: self.inner.map_state(f),
             inverse_rotation: self.inverse_rotation,
             _marker: PhantomData,
         }

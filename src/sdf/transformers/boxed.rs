@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use crate::{Sdf, SdfState, sdf::state::SdfBindStateOperation};
+use crate::{Sdf, SdfState, prelude::SdfMapStateOperation, sdf::state::SdfBindStateOperation};
 use num::Float;
 
 #[derive(Debug, Default, Clone, PartialEq, Hash)]
@@ -49,5 +49,18 @@ where
     #[inline]
     fn bind(self, s: State) -> Self::Output {
         Boxed::new(self.0.bind(s))
+    }
+}
+
+impl<Scalar: Float, T, U, const DIM: usize, InState: SdfState, OutState: SdfState>
+    SdfMapStateOperation<Scalar, DIM, InState, OutState> for Boxed<Scalar, T, DIM, InState>
+where
+    T: SdfMapStateOperation<Scalar, DIM, InState, OutState, Output = U> + 'static,
+    U: Sdf<Scalar, DIM, OutState> + 'static,
+{
+    type Output = Boxed<Scalar, U, DIM, OutState>;
+
+    fn map_state(self, f: impl FnOnce(InState) -> OutState) -> Self::Output {
+        Boxed::new(self.0.map_state(f))
     }
 }
