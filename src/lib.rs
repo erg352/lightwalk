@@ -20,7 +20,7 @@ pub trait Sdf<Scalar: Float, const DIM: usize, State = ()> {
     ///
     /// let sphere = Sphere.translate(&[1.0, 2.0, 3.0]);
     ///
-    /// let distance = sphere.distance(&[3.0, 2.0, 1.0]);
+    /// let distance = sphere.distance([3.0, 2.0, 1.0]);
     /// ```
     fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar;
 

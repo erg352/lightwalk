@@ -17,7 +17,7 @@ use lightwalk::prelude::*;
 let sdf = Sphere.translate(&[1.0, 2.0, 3.0]).add(Cube.round(0.5));
 
 // We can grab the distance from any point in the world.
-let distance = sdf.distance(&[0.5, 0.3, 0.8]);
+let distance = sdf.distance([0.5, 0.3, 0.8]);
 
 // Create a marcher to perform ray marching on the SDF.
 let marcher = Marcher {
