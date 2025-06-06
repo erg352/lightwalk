@@ -4,21 +4,24 @@ use std::marker::PhantomData;
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct Union<Scalar: Float, Lhs, Rhs, const DIM: usize, State: SdfState>
+pub struct Union<Scalar: Float, Lhs, Rhs, const DIM: usize, State: SdfState, B>
 where
     Lhs: Sdf<Scalar, DIM, State>,
     Rhs: Sdf<Scalar, DIM, State>,
+    B: Fn((Scalar, State), (Scalar, State)) -> State,
 {
     lhs: Lhs,
     rhs: Rhs,
+    state_blender: B,
     _marker: PhantomData<(Scalar, State)>,
 }
 
-impl<Scalar: Float, Lhs, Rhs, const DIM: usize, State: SdfState> Sdf<Scalar, DIM, State>
-    for Union<Scalar, Lhs, Rhs, DIM, State>
+impl<Scalar: Float, Lhs, Rhs, const DIM: usize, State: SdfState, B> Sdf<Scalar, DIM, State>
+    for Union<Scalar, Lhs, Rhs, DIM, State, B>
 where
     Lhs: Sdf<Scalar, DIM, State>,
     Rhs: Sdf<Scalar, DIM, State>,
+    B: Fn((Scalar, State), (Scalar, State)) -> State,
 {
     #[inline]
     fn distance_from_slice(&self, point: &[Scalar; DIM]) -> Scalar {
@@ -32,11 +35,10 @@ where
         let lhs_distance = self.lhs.distance_from_slice(point);
         let rhs_distance = self.rhs.distance_from_slice(point);
 
-        if lhs_distance < rhs_distance {
-            self.lhs.state(point)
-        } else {
-            self.rhs.state(point)
-        }
+        let lhs_state = self.lhs.state(point);
+        let rhs_state = self.rhs.state(point);
+
+        (self.state_blender)((lhs_distance, lhs_state), (rhs_distance, rhs_state))
     }
 
     #[inline]
@@ -46,24 +48,29 @@ where
         let lhs_distance = self.lhs.distance_from_slice(&point);
         let rhs_distance = self.rhs.distance_from_slice(&point);
 
-        if lhs_distance < rhs_distance {
-            (lhs_distance, self.lhs.state(&point))
-        } else {
-            (rhs_distance, self.rhs.state(&point))
-        }
+        let lhs_state = self.lhs.state(&point);
+        let rhs_state = self.rhs.state(&point);
+
+        let distance = lhs_distance.min(rhs_distance);
+        let state = (self.state_blender)((lhs_distance, lhs_state), (rhs_distance, rhs_state));
+
+        (distance, state)
     }
 }
 
-impl<Scalar: Float, Lhs, Rhs, const DIM: usize, State: SdfState> Union<Scalar, Lhs, Rhs, DIM, State>
+impl<Scalar: Float, Lhs, Rhs, const DIM: usize, State: SdfState, B>
+    Union<Scalar, Lhs, Rhs, DIM, State, B>
 where
     Lhs: Sdf<Scalar, DIM, State>,
     Rhs: Sdf<Scalar, DIM, State>,
+    B: Fn((Scalar, State), (Scalar, State)) -> State,
 {
     #[inline]
-    pub fn new(lhs: Lhs, rhs: Rhs) -> Self {
+    pub fn new(lhs: Lhs, rhs: Rhs, state_blender: B) -> Self {
         Self {
             lhs,
             rhs,
+            state_blender,
             _marker: PhantomData,
         }
     }

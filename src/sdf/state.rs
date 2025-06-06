@@ -16,6 +16,17 @@ where
             _marker: PhantomData,
         }
     }
+
+    fn bind_default(self) -> StateBound<Scalar, DIM, Self, State>
+    where
+        State: Default,
+    {
+        StateBound {
+            inner: self,
+            state: Default::default(),
+            _marker: PhantomData,
+        }
+    }
 }
 
 impl<Scalar: Float, const DIM: usize, State: SdfState, T> SdfBindStateOperation<Scalar, DIM, State>

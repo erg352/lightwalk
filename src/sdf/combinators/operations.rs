@@ -3,14 +3,30 @@ use num::Float;
 
 use super::{Difference, Intersection, Union, intersection::IterIntersection, union::IterUnion};
 
+fn closest_state_blender<Scalar: Float, State: SdfState>(
+    (lhs_distance, lhs_state): (Scalar, State),
+    (rhs_distance, rhs_state): (Scalar, State),
+) -> State {
+    if lhs_distance < rhs_distance {
+        lhs_state
+    } else {
+        rhs_state
+    }
+}
+
 pub trait SdfCombinationOperations<Scalar: Float, Rhs, const DIM: usize, State: SdfState>:
     Sdf<Scalar, DIM, State> + Sized
 where
     Rhs: Sdf<Scalar, DIM, State>,
 {
+    #[allow(clippy::type_complexity)]
     #[inline]
-    fn add(self, rhs: Rhs) -> Union<Scalar, Self, Rhs, DIM, State> {
-        Union::new(self, rhs)
+    fn add(
+        self,
+        rhs: Rhs,
+    ) -> Union<Scalar, Self, Rhs, DIM, State, impl Fn((Scalar, State), (Scalar, State)) -> State>
+    {
+        Union::new(self, rhs, closest_state_blender)
     }
 
     #[inline]
