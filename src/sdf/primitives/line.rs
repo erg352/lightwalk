@@ -55,3 +55,42 @@ impl<Scalar: Float, const DIM: usize> Line<Scalar, DIM> {
         unsafe { Self::new_unchecked(direction) }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[should_panic]
+    fn illegal_line_1d() {
+        let _line = Line::new([0.0]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn illegal_line_2d() {
+        let _line = Line::new([0.0, 0.0]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn illegal_line_3d() {
+        let _line = Line::new([0.0, 0.0, 0.0]);
+    }
+
+    #[test]
+    fn distance_1d() {
+        for j in -100..100 {
+            if j == 0 {
+                continue;
+            }
+
+            let line = Line::new([j as f32]);
+
+            for i in -100..100 {
+                let f = i as f32;
+                assert_eq!(line.distance([f]), 0.0);
+            }
+        }
+    }
+}

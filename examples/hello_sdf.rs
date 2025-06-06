@@ -1,4 +1,4 @@
-use std::{f32::consts::PI, rc::Rc};
+use std::f32::consts::PI;
 
 // The prelude contains all the types and traits we need to use lightweight and is recommended to
 // avoid an overabundance of 'use' statements.
@@ -14,8 +14,8 @@ fn main() {
     // bunch of operations such as scaling and translating. Some such operations might limit the
     // 'scope' of the SDF. As an example, we are translating by a 2D vector, and as such, the SDF
     // will be in 2D. If we translated with a 3D Vector, we would have had a 3D SDF and so on.
-    let s = sphere().scale(4.).translate(&[1., 2.]);
-    let c = cube()
+    let _s = sphere().scale(4.).translate(&[1., 2.]);
+    let _c = cube()
         .scale(2.)
         .round(0.3)
         .rotate_2d(PI / 4.)
