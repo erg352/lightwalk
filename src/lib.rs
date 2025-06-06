@@ -37,10 +37,43 @@ pub trait Sdf<Scalar: Float, const DIM: usize, State = ()> {
         self.distance_from_slice(&point.into())
     }
 
+    /// Returns the distance and the state of the SDF at a given point at once. This is the
+    /// prefered method for fetching both pieces of data, as further optimisations can be performed
+    /// when done concurrently. See implementation of combiner SDFs for more information.
     #[inline]
     fn distance_and_state(&self, point: impl Into<[Scalar; DIM]>) -> (Scalar, State) {
         let point = &point.into();
         (self.distance_from_slice(point), self.state(point))
+    }
+
+    /// Returns the gradient of the SDF at a given point. The derivatives are calculated with
+    /// finite differences, hence the need for epsilon.
+    #[inline]
+    fn gradient(&self, point: impl Into<[Scalar; DIM]>, epsilon: Scalar) -> [Scalar; DIM] {
+        let point = point.into();
+
+        std::array::from_fn(|i| {
+            let mut point = point;
+            point[i] = point[i] + epsilon;
+
+            self.distance_from_slice(&point)
+        })
+    }
+
+    /// Returns the normal of the SDF at a given point (the normalized gradient of the field.) For
+    /// more information about epslion, see the gradient method on this trait.
+    #[inline]
+    fn normal(&self, point: impl Into<[Scalar; DIM]>, epsilon: Scalar) -> [Scalar; DIM] {
+        let gradient = self.gradient(point, epsilon);
+
+        let norm = gradient
+            .iter()
+            .map(|e| e.powi(2))
+            .fold(Scalar::zero(), |acc, e| acc + e)
+            .sqrt();
+
+        let inv_norm = Scalar::one() / norm;
+        std::array::from_fn(|i| gradient[i] * inv_norm)
     }
 }
 
