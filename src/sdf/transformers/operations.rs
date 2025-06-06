@@ -1,7 +1,9 @@
+use std::{rc::Rc, sync::Arc};
+
 use crate::{Sdf, SdfState};
 use num::Float;
 
-use super::{Boxed, Inverted, Repeated, Rounded, Scaled, Thickened, Translated};
+use super::{Inverted, Repeated, Rounded, Scaled, Thickened, Translated};
 
 pub trait SdfTransformOperations<Scalar: Float, const DIM: usize, State: SdfState>:
     Sdf<Scalar, DIM, State> + Sized
@@ -48,8 +50,20 @@ pub trait SdfTransformOperations<Scalar: Float, const DIM: usize, State: SdfStat
 
     /// Places the data stored by the SDF in the heap.
     #[inline]
-    fn in_box(self) -> Boxed<Scalar, Self, DIM, State> {
-        Boxed::new(self)
+    fn in_box(self) -> Box<Self> {
+        Box::new(self)
+    }
+
+    /// Places the data stored by the SDF in the heap as a shared pointer.
+    #[inline]
+    fn in_rc(self) -> Rc<Self> {
+        Rc::new(self)
+    }
+
+    /// Places the data stored by the SDF in the heap as a thread-safe shared pointer.
+    #[inline]
+    fn in_arc(self) -> Arc<Self> {
+        Arc::new(self)
     }
 }
 
