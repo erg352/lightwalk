@@ -20,7 +20,7 @@ impl<Scalar: Float, const DIM: usize> Sdf<Scalar, DIM> for Sphere {
             point
                 .iter()
                 .map(|scalar| *scalar * *scalar)
-                .fold(Scalar::zero(), |acc, e| acc + e)
+                .fold(Scalar::zero(), |acc, e| acc + e) // .sum() isn't defined for floats.
                 .sqrt()
         };
 
