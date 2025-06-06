@@ -29,9 +29,20 @@ where
         Union::new(self, rhs, closest_state_blender)
     }
 
+    #[allow(clippy::type_complexity)]
     #[inline]
-    fn mul(self, rhs: Rhs) -> Intersection<Scalar, Self, Rhs, DIM, State> {
-        Intersection::new(self, rhs)
+    fn mul(
+        self,
+        rhs: Rhs,
+    ) -> Intersection<
+        Scalar,
+        Self,
+        Rhs,
+        DIM,
+        State,
+        impl Fn((Scalar, State), (Scalar, State)) -> State,
+    > {
+        Intersection::new(self, rhs, closest_state_blender)
     }
 
     #[inline]
