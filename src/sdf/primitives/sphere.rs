@@ -1,6 +1,9 @@
 use crate::Sdf;
 use num::Float;
 
+/// A SDF Primitive of a sphere of radius 1 centered at the origin. Both the radius and the center
+/// can be modified by scaling and translating the SDF (see
+/// [this trait](`crate::prelude::SdfTransformOperations`)) for the methods needed to achieve this.
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Sphere;
